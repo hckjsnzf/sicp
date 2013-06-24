@@ -81,3 +81,12 @@
 
 
 ;; p 2.27
+(define (deep-reverse tree)
+  (define (df tree lst)
+    (if (null? tree)
+        lst
+        (df (cdr tree)
+          (cons (if (pair? (car tree))
+                    (df (car tree) '())
+                    (car tree)) lst))))
+  (df tree '()))
