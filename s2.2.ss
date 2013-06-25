@@ -111,3 +111,44 @@
 
 
 
+;; p 2.29
+(define (make-mobile left right)
+  (list left right))
+(define (make-branch length structure)
+  (list length structure))
+
+(define (left-branch mob)
+  (car mob))
+(define (right-branch mob)
+  (car (cdr mob)))
+(define (branch-length bran)
+  (car bran))
+(define (branch-structure bran)
+  (car (cdr bran)))
+
+(define (total-weight mob)
+  (define (weight-branch branch)
+    (if (pair? (branch-structure branch))
+        (total-weight (branch-structure branch))
+        (branch-structure branch)))
+  (+ (weight-branch (left-branch mob))
+    (weight-branch (right-branch mob))))
+
+(define (balance?-mobile mob)
+  (define (weight-branch branch)
+    (if (pair? (branch-structure branch))
+        (total-weight (branch-structure branch))
+        (branch-structure branch)))
+  (define (scale-branch branch)
+    (* (branch-length branch)
+      (weight-branch branch)))
+  (and (if (pair? (branch-structure (left-branch mob)))
+           (balance?-mobile
+             (branch-structure (left-branch mob)))
+           #t)
+       (if (pair? (branch-structure (right-branch mob)))
+           (balance?-mobile
+             (branch-structure (right-branch mob)))
+           #t)
+       (= (scale-branch (left-branch mob))
+         (scale-branch (right-branch mob)))))
