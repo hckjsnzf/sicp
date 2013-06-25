@@ -90,3 +90,24 @@
                     (df (car tree) '())
                     (car tree)) lst))))
   (df tree '()))
+
+
+;; p 2.28
+(define (fringe tree)
+  (if (null? tree)
+      '()
+      (if (pair? (car tree))
+          (append (fringe (car tree))
+            (fringe (cdr tree)))
+          (cons (car tree)
+            (fringe (cdr tree))))))
+
+(define (fringe-m tree)
+  (cond
+    [(null? tree) '()]
+    [(not (pair? tree)) (list tree)]
+    [else
+      (append (fringe-m (car tree)) (fringe-m (cdr tree)))]))
+
+
+
