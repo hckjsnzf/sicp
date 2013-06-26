@@ -152,3 +152,40 @@
            #t)
        (= (scale-branch (left-branch mob))
          (scale-branch (right-branch mob)))))
+
+
+;; p 2.30
+(define (square-tree tree)
+  (cond
+    [(null? tree) '()]
+    [(not (pair? tree)) (* tree tree)]
+    [else
+      (cons (square-tree (car tree))
+        (square-tree (cdr tree)))]))
+(define (square-tree-m tree)
+  (map (lambda (x)
+         (cond
+           [(not (pair? x)) (* x x)]
+           [else
+             (square-tree-m x)]))
+    tree))
+
+
+;; p 2.31
+(define (tree-map f tree)
+  (map (lambda (x)
+         (cond
+           [(not (pair? x)) (f x)]
+           [else
+             (tree-map f x)]))
+    tree))
+
+;; p 2.32
+(define (subsets s)
+  (if (null? s)
+      '(())
+      (let [(rest (subsets (cdr s)))]
+        (append rest (map (lambda (x)
+                            (cons (car s) x)) rest)))))
+
+
