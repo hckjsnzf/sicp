@@ -189,3 +189,23 @@
                             (cons (car s) x)) rest)))))
 
 
+
+
+;; s 2.23
+(define (accumulate op initial sequence)
+  (if (null? sequence)
+      initial
+      (op (car sequence)
+        (accumulate op initial (cdr sequence)))))
+;; p 2.33
+(define (m-map p sequence)
+  (accumulate (lambda (x y)
+                (cons (p x) y))
+    '() sequence))
+(define (m-append seq1 seq2)
+  (accumulate cons
+    seq2 seq1))
+(define (m-length sequence)
+  (accumulate (lambda (x y)
+                (+ 1 y))
+    0 sequence))
