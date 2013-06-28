@@ -209,3 +209,36 @@
   (accumulate (lambda (x y)
                 (+ 1 y))
     0 sequence))
+
+
+;; p 2.34
+(define (horner-eval x sequence)
+  (accumulate (lambda (this-coeff higher-terms)
+                (+ this-coeff
+                  (* x higher-terms)))
+    0
+    sequence))
+
+;; p 2.35
+(define (count-leaves t)
+  (accumulate + 0 (map (lambda (x) 1)
+                    (fringe-m t))))
+(define (count-leaves-m t)
+  (accumulate + 0 (map (lambda (node)
+                         (if (pair? node)
+                             (count-leaves-m node)
+                             1))
+                    t)))
+
+
+;; p 2.36
+(define (accumulate-n op init seqs)
+  (if (null? (car seqs))
+      '()
+      (cons (accumulate op init (map (lambda (x)
+                                       (car x))
+                                  seqs))
+        (accumulate-n op init (map (lambda (x)
+                                     (cdr x))
+                                seqs)))))
+
