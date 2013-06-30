@@ -1,7 +1,7 @@
 
 
 ;; exer 1.3
-(define squares
+(define square
   (lambda (x)
     (* x x)))
 (define sum-squares-two

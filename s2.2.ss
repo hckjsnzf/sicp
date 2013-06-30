@@ -242,3 +242,106 @@
                                      (cdr x))
                                 seqs)))))
 
+
+;; p 2.37 ???????
+(define (dot-product v w)
+  (accumulate + 0 (map * v w)))
+(define (matrix-*-vector m v)
+  (map (lambda (x)
+         (dot-product x v))
+    m))
+(define (transpose mat)
+  (accumulate-n cons '() mat))
+
+
+
+
+;; p 2.38
+(define fold-right-m accumulate)
+(define (fold-left-m op init sequence)
+  (define (iter result rest)
+    (if (null? rest)
+        result
+        (iter (op result (car rest))
+          (cdr rest))))
+  (iter init sequence))
+
+(fold-right-m / 1 '(1 2 3))
+;; -> 3/2
+(fold-left-m / 1 '(1 2 3))
+;; -> 1/6
+(fold-right-m list '() '(1 2 3))
+;; -> (1 (2 (3)))
+(fold-left-m list '() '(1 2 3))
+;; -> (((() 1) 2) 3)
+
+;; p 2.39
+(define (reverse-1 sequence)
+  (fold-right-m (lambda (x y)
+                  (append y (list x)))
+    '() sequence))
+(define (reverse-2 sequence)
+  (fold-left-m (lambda (x y)
+                 (cons y x))
+    '() sequence))
+
+
+
+(define (enumerate-interval low high)
+  (if (> low high)
+      '()
+      (cons low (enumerate-interval (+ low 1) high))))
+
+(define (flatmap proc seq)
+  (accumulate append '() (map proc seq)))
+;; 1.26.ss file
+(define (prime-sum? pair)
+  (prime? (+ (car pair) (cadr pair))))
+(define (make-pair-sum pair)
+  (list (car pair) (cadr pair) (+ (car pair) (cadr pair))))
+(define (prime-sum-pairs n)
+  (map make-pair-sum
+    (filter prime-sum?
+      (flatmap
+        (lambda (i)
+          (map (lambda (j) (list i j))
+            (enumerate-interval 1 (- i 1))))
+        (enumerate-interval 1 n)))))
+
+
+(define (remove item sequence)
+  (filter (lambda (x) (not (= x item)))
+    sequence))
+(define (permutations s)
+  (if (null? s)
+      (list '())
+      (flatmap (lambda (x)
+                 (map (lambda (p) (cons x p))
+                   (permutations (remove x s))))
+        s)))
+
+
+;; p 2.40
+(define (unique-pairs n)
+  (flatmap
+    (lambda (i)
+      (map (lambda (j) (list i j))
+        (enumerate-interval 1 (- i 1))))
+    (enumerate-interval 1 n)))
+(define (prime-sum-pairs-sim n)
+  (map make-pair-sum
+    (filter prime-sum?
+      (unique-pairs n))))
+
+;; p 2.41
+(define (three-pairs n)
+  (flatmap (lambda (n) (map (lambda (x)
+                              (cons n x))
+                         (unique-pairs (- n 1))))
+    (enumerate-interval 1 n)))
+(define (sum-of-three n k)
+  (filter (lambda (x)
+            (= (fold-right-m + 0 x)
+              k))
+    (three-pairs n)))
+
